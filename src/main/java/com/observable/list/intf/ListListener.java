@@ -4,9 +4,6 @@ import java.util.List;
 
 /**
  * Interface that should implement any listener to an observable list
- * 
- * @param T
- *            type of the custom event that will be listened to
  */
 public interface ListListener<T extends CustomEvent> {
 

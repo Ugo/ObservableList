@@ -2,9 +2,6 @@ package com.observable.list.intf;
 
 /**
  * Interface for any List that can be observed
- * 
- * @param T
- *            type of the event that is sent by the Observable list
  */
 public interface Observable<T extends CustomEvent> {
 
