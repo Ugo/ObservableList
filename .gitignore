@@ -4,6 +4,7 @@
 /build/
 /out/
 /.gradle/
+/gradlew.bat
 /.idea/
 /bin/
 /.classpath
