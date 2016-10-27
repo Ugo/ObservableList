@@ -17,9 +17,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.observable.list.ObservableList;
-import com.observable.list.TestListListener;
-
 /**
  * Unit tests for multiple ObservableLists and TestListListeners interacting
  * together. This class doesn't focus on each method defined in the

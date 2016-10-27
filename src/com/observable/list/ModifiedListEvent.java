@@ -1,10 +1,10 @@
 package com.observable.list;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import com.observable.list.enums.ActionType;
 import com.observable.list.intf.CustomEvent;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Class for the event that can open on a list. It defines the action that has
@@ -37,7 +37,7 @@ public class ModifiedListEvent implements CustomEvent {
 	 * 
 	 * @param type
 	 *            the action type performed by the event
-	 * @param listElements
+	 * @param elements
 	 *            the elements used in the event
 	 */
 	public ModifiedListEvent(ActionType type, Collection<?> elements) {

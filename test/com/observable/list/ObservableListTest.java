@@ -1,5 +1,6 @@
 package com.observable.list;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -15,7 +16,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.observable.list.ObservableList;
 import com.observable.list.utils.DummyListListener;
 
 /**
@@ -56,6 +56,7 @@ public class ObservableListTest {
 
 		list.register(dummyListener2);
 		assertListNumberListenersEquals(2);
+
 	}
 
 	/**

@@ -1,0 +1,19 @@
+group 'ObservableList'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    baseName = 'observableList'
+    version =  '0.1.0'
+}
+
+dependencies {
+    testCompile "junit:junit:4.12"
+}
