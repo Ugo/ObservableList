@@ -11,14 +11,14 @@ import java.util.Collections;
  * been performed on the list and the elements that have been used for that
  * action.
  * 
- * @see {@link ActionType}
- * @see {@link CustomEvent}
+ * @see ActionType
+ * @see CustomEvent
  */
 public class ModifiedListEvent implements CustomEvent {
 	// type of action performed in the event
-	public ActionType type;
+	public final ActionType type;
 	// elements added or removed in the event
-	public Collection<?> elements;
+	public final Collection<?> elements;
 
 	/**
 	 * Simple constructor for a single element

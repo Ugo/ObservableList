@@ -10,26 +10,18 @@ import com.observable.list.intf.ListListener;
  */
 public class TestListListener implements ListListener<ModifiedListEvent> {
 
-	public final static String DEFAULT_LISTENER_NAME = "DefaultName";
-	public final static String ITEMS_SEPARATOR = ",";
-	public final static String ITEMS_LIST_DESC = ":";
+	private final static String ITEMS_SEPARATOR = ",";
+	private final static String ITEMS_LIST_DESC = ":";
 
 	/**
 	 * Name of the listener
 	 */
-	String listenerName;
+    private final String listenerName;
 
 	/**
 	 * Keep the last event received by the listener
 	 */
 	private ModifiedListEvent lastEventReceived;
-
-	/**
-	 * Default constructor
-	 */
-	public TestListListener() {
-		this(DEFAULT_LISTENER_NAME);
-	}
 
 	/**
 	 * Constructor setting the name.
@@ -50,7 +42,7 @@ public class TestListListener implements ListListener<ModifiedListEvent> {
 		this.lastEventReceived = event;
 
 		// concatenate elements of the event
-		StringBuffer strBuff = new StringBuffer();
+		StringBuilder strBuff = new StringBuilder();
 		for (Object elem : event.elements) {
 			strBuff.append(elem).append(" ");
 		}

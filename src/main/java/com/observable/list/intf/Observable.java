@@ -11,7 +11,7 @@ public interface Observable<T extends CustomEvent> {
 	 * @param listener
 	 *            listener that will be registered
 	 */
-	public void register(ListListener<T> listener);
+	void register(ListListener<T> listener);
 
 	/**
 	 * Method to unregister a listener to the Observable
@@ -19,7 +19,7 @@ public interface Observable<T extends CustomEvent> {
 	 * @param listener
 	 *            listener that will be unregistered
 	 */
-	public void unregister(ListListener<T> listener);
+	void unregister(ListListener<T> listener);
 
 	/**
 	 * Method called by the Observable to notify all the listeners that an event
@@ -28,5 +28,5 @@ public interface Observable<T extends CustomEvent> {
 	 * @param event
 	 *            event that has occurred on the Observable
 	 */
-	public void notifyAllListeners(T event);
+	void notifyAllListeners(T event);
 }

@@ -26,12 +26,12 @@ public class ObservableListTest {
 	/**
 	 * Define all the objects that will be used in the tests.
 	 */
-	ObservableList<Object> list;
-	DummyListListener dummyListener;
-	DummyListListener dummyListener2;
-	List<Object> threeElemList = new ArrayList<Object>(Arrays.asList("elem1", "elem2", "elem3"));
-	List<Object> fiveElemList = new ArrayList<Object>(Arrays.asList("elem1", "elem2", "elem3", "elem4", "elem5"));
-	List<Object> emptyList = Collections.emptyList();
+	private ObservableList<Object> list;
+	private DummyListListener dummyListener;
+	private DummyListListener dummyListener2;
+	private final List<Object> threeElemList = new ArrayList<>(Arrays.asList("elem1", "elem2", "elem3"));
+	private final List<Object> fiveElemList = new ArrayList<>(Arrays.asList("elem1", "elem2", "elem3", "elem4", "elem5"));
+	private final List<Object> emptyList = Collections.emptyList();
 	
 	// to remove end
 	
@@ -41,7 +41,7 @@ public class ObservableListTest {
 	 */
 	@Before
 	public void beforeTestInit() {
-		list = new ObservableList<Object>();
+		list = new ObservableList<>();
 		dummyListener = new DummyListListener();
 		dummyListener2 = new DummyListListener();
 	}
@@ -120,13 +120,13 @@ public class ObservableListTest {
 		list.add(temp);
 
 		assertAddActionHappened();
-		assertAddedListEqualsTo(Arrays.asList(temp));
+		assertAddedListEqualsTo(Collections.singletonList(temp));
 		assertRemovedListEqualsTo(emptyList);
-		assertListEqualsTo(Arrays.asList(temp));
+		assertListEqualsTo(Collections.singletonList(temp));
 
 		// test on a null value
 		list.unregister(dummyListener);
-		list = new ObservableList<Object>();
+		list = new ObservableList<>();
 		dummyListener = new DummyListListener();
 		list.register(dummyListener);
 		list.add(null);
@@ -155,7 +155,7 @@ public class ObservableListTest {
 		list.add(0, obj2);
 
 		assertAddActionHappened();
-		assertAddedListEqualsTo(Arrays.asList(obj2));
+		assertAddedListEqualsTo(Collections.singletonList(obj2));
 		assertRemovedListEqualsTo(emptyList);
 		assertListEqualsTo(Arrays.asList(obj2, obj1));
 	}
@@ -197,7 +197,7 @@ public class ObservableListTest {
 		list.addAll(0, threeElemList);
 
 		assertAddActionHappened();
-		List<Object> tempList = new ArrayList<Object>();
+		List<Object> tempList = new ArrayList<>();
 		tempList.addAll(threeElemList);
 		tempList.add(temp);
 		assertAddedListEqualsTo(threeElemList);
@@ -243,7 +243,7 @@ public class ObservableListTest {
 
 		assertRemoveActionHappened();
 		assertAddedListEqualsTo(emptyList);
-		assertRemovedListEqualsTo(Collections.singletonList((Object) "elem2"));
+		assertRemovedListEqualsTo(Collections.singletonList("elem2"));
 		assertListEqualsTo(Arrays.asList("elem1", "elem3"));
 	}
 
@@ -264,7 +264,7 @@ public class ObservableListTest {
 
 		assertRemoveActionHappened();
 		assertAddedListEqualsTo(emptyList);
-		assertRemovedListEqualsTo(Collections.singletonList((Object) "elem2"));
+		assertRemovedListEqualsTo(Collections.singletonList("elem2"));
 		assertListEqualsTo(Arrays.asList("elem1", "elem3"));
 	}
 
@@ -354,8 +354,8 @@ public class ObservableListTest {
 		list.set(1, newElem);
 
 		assertBothActionsHappened();
-		assertAddedListEqualsTo(Arrays.asList(newElem));
-		assertRemovedListEqualsTo(Arrays.asList("elem2"));
+		assertAddedListEqualsTo(Collections.singletonList(newElem));
+		assertRemovedListEqualsTo(Collections.singletonList("elem2"));
 		assertListEqualsTo(Arrays.asList("elem1", newElem, "elem3"));
 		assertEquals(list.get(1), newElem);
 	}
@@ -391,7 +391,7 @@ public class ObservableListTest {
 	@Test
 	public void testRemoveIf() {
 		list.addAll(threeElemList);
-		Integer testInt = new Integer(10);
+		Integer testInt = 10;
 		list.add(testInt);
 
 		assertFalse(dummyListener.hasBeenNotified());
@@ -400,20 +400,17 @@ public class ObservableListTest {
 		assertRemoveActionHappened();
 		assertAddedListEqualsTo(emptyList);
 		assertRemovedListEqualsTo(threeElemList);
-		assertListEqualsTo(Arrays.asList(testInt));
+		assertListEqualsTo(Collections.singletonList(testInt));
 	}
 
 	/**
 	 * Simple Predicate to test if an Object is a String or not, this will be
 	 * used only in the testRemoveIf() method
 	 */
-	class IsStringPredicate implements Predicate<Object> {
+	private class IsStringPredicate implements Predicate<Object> {
 		@Override
 		public boolean test(Object t) {
-			if (t != null && t instanceof String) {
-				return true;
-			}
-			return false;
+			return t != null && t instanceof String;
 		}
 	}
 
@@ -426,13 +423,7 @@ public class ObservableListTest {
 	public void testRemoveIfNoMatch() {
 		list.addAll(fiveElemList);
 		list.register(dummyListener);
-		list.removeIf(new Predicate<Object>() {
-			// always return false i.e the match never happens.
-			@Override
-			public boolean test(Object t) {
-				return false;
-			}
-		});
+		list.removeIf(t -> false);
 
 		assertNothingHappened(fiveElemList);
 	}
@@ -447,7 +438,7 @@ public class ObservableListTest {
 	@Test
 	public void testReplaceAll() {
 		list.addAll(threeElemList);
-		Integer temp = new Integer(10);
+		Integer temp = 10;
 		list.add(temp);
 		assertFalse(dummyListener.hasBeenNotified());
 		list.register(dummyListener);
@@ -464,11 +455,11 @@ public class ObservableListTest {
 	 * Simple UnaryOperator that will append "New" to the object if it is a
 	 * String
 	 */
-	class AddNewOperator implements UnaryOperator<Object> {
+	private class AddNewOperator implements UnaryOperator<Object> {
 		@Override
 		public Object apply(Object t) {
 			if (t != null && t instanceof String) {
-				return (String) t + "New";
+				return t + "New";
 			}
 			return t;
 		}
@@ -483,13 +474,8 @@ public class ObservableListTest {
 	public void testReplaceAllNoMatch() {
 		list.addAll(threeElemList);
 		list.register(dummyListener);
-		list.replaceAll(new UnaryOperator<Object>() {
-			// the object is not modified by the operator
-			@Override
-			public Object apply(Object t) {
-				return t;
-			}
-		});
+		// the object is not modified by the operator
+		list.replaceAll(t -> t);
 
 		assertNothingHappened(threeElemList);
 	}
@@ -533,10 +519,6 @@ public class ObservableListTest {
 		dummyListener = null;
 		dummyListener2 = null;
 	}
-
-	/***********************************
-	 * Tool methods
-	 ***********************************/
 
 	/**
 	 * Tool method that will check if the number of listeners for the

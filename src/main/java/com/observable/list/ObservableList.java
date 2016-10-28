@@ -6,10 +6,10 @@ import static com.observable.list.enums.ActionType.REMOVE;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 import com.observable.list.intf.ListListener;
 import com.observable.list.intf.Observable;
@@ -33,13 +33,13 @@ public class ObservableList<T> extends ArrayList<T> implements Observable<Modifi
 	 * standard ArrayList implementation is not synchronized a synchronized list
 	 * is used here.
 	 */
-	private List<ListListener<ModifiedListEvent>> listeners = Collections
+	private final List<ListListener<ModifiedListEvent>> listeners = Collections
 			.synchronizedList(new ArrayList<ListListener<ModifiedListEvent>>());
 
 	/**
 	 * Null listener exception message
 	 */
-	public final static String NULL_LISTENER_EXCEPTION = "Null Listener";
+	private final static String NULL_LISTENER_EXCEPTION = "Null Listener";
 
 	/**
 	 * Simple method to register a listener
@@ -91,9 +91,8 @@ public class ObservableList<T> extends ArrayList<T> implements Observable<Modifi
 		// it is imperative that the user manually synchronize the list when
 		// iterating over it.
 		synchronized (listeners) {
-			Iterator<ListListener<ModifiedListEvent>> iterator = listeners.iterator();
-			while (iterator.hasNext()) {
-				iterator.next().update(this, event);
+			for (ListListener<ModifiedListEvent> listener : listeners) {
+				listener.update(this, event);
 			}
 		}
 	}
@@ -107,7 +106,7 @@ public class ObservableList<T> extends ArrayList<T> implements Observable<Modifi
 		boolean result = super.add(element);
 		if (result) {
 			notifyAllListeners(new ModifiedListEvent(ADD, element));
-			return result;
+			return true;
 		}
 		return false;
 	}
@@ -131,7 +130,7 @@ public class ObservableList<T> extends ArrayList<T> implements Observable<Modifi
 		boolean result = super.addAll(elements);
 		if (result) {
 			notifyAllListeners(new ModifiedListEvent(ADD, elements));
-			return result;
+			return true;
 		}
 
 		return false;
@@ -146,7 +145,7 @@ public class ObservableList<T> extends ArrayList<T> implements Observable<Modifi
 		boolean result = super.addAll(index, elements);
 		if (result) {
 			notifyAllListeners(new ModifiedListEvent(ADD, elements));
-			return result;
+			return true;
 		}
 		return false;
 	}
@@ -185,7 +184,7 @@ public class ObservableList<T> extends ArrayList<T> implements Observable<Modifi
 		boolean result = super.remove(element);
 		if (result) {
 			notifyAllListeners(new ModifiedListEvent(REMOVE, element));
-			return result;
+			return true;
 		}
 		return false;
 	}
@@ -198,16 +197,11 @@ public class ObservableList<T> extends ArrayList<T> implements Observable<Modifi
 	 */
 	@Override
 	public boolean removeAll(Collection<?> elements) {
-		List<Object> elementsToRemove = new ArrayList<>();
-		for (Object elem : elements) {
-			if (this.contains(elem)) {
-				elementsToRemove.add(elem);
-			}
-		}
+		List<Object> elementsToRemove = elements.stream().filter((Predicate<Object>) this::contains).collect(Collectors.toList());
 		boolean result = super.removeAll(elements);
 		if (result && !elementsToRemove.isEmpty()) {
 			notifyAllListeners(new ModifiedListEvent(REMOVE, elementsToRemove));
-			return result;
+			return true;
 		}
 
 		return false;
@@ -233,7 +227,7 @@ public class ObservableList<T> extends ArrayList<T> implements Observable<Modifi
 	 */
 	@Override
 	protected void removeRange(int fromIndex, int toIndex) {
-		List<T> rangeElements = new ArrayList<T>(super.subList(fromIndex, toIndex));
+		List<T> rangeElements = new ArrayList<>(super.subList(fromIndex, toIndex));
 		super.removeRange(fromIndex, toIndex);
 		notifyAllListeners(new ModifiedListEvent(REMOVE, rangeElements));
 	}
@@ -246,17 +240,12 @@ public class ObservableList<T> extends ArrayList<T> implements Observable<Modifi
 	 */
 	@Override
 	public boolean removeIf(Predicate<? super T> filter) {
-		List<T> elementsToRemove = new ArrayList<T>();
-		for (T item : this) {
-			if (filter.test(item)) {
-				elementsToRemove.add(item);
-			}
-		}
+		List<T> elementsToRemove = this.stream().filter(filter::test).collect(Collectors.toList());
 		boolean result = super.removeIf(filter);
 
 		if (result && !elementsToRemove.isEmpty()) {
 			notifyAllListeners(new ModifiedListEvent(REMOVE, elementsToRemove));
-			return result;
+			return true;
 		}
 
 		return false;
@@ -272,12 +261,12 @@ public class ObservableList<T> extends ArrayList<T> implements Observable<Modifi
 	 */
 	@Override
 	public void replaceAll(UnaryOperator<T> operator) {
-		List<T> removedElements = new ArrayList<T>();
-		List<T> addedElements = new ArrayList<T>();
+		List<T> removedElements = new ArrayList<>();
+		List<T> addedElements = new ArrayList<>();
 		// the check is performed on each item in the list to know if it will be
 		// replaced or not
 		for (T item : this) {
-			T modifiedItem = operator.apply((T) item);
+			T modifiedItem = operator.apply(item);
 			if (!item.equals(modifiedItem)) {
 				removedElements.add(item);
 				addedElements.add(modifiedItem);
@@ -299,12 +288,7 @@ public class ObservableList<T> extends ArrayList<T> implements Observable<Modifi
 	 */
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		List<T> removedElements = new ArrayList<T>();
-		for (T item : this) {
-			if (c != null && !c.contains(item)) {
-				removedElements.add(item);
-			}
-		}
+		List<T> removedElements = this.stream().filter(item -> !c.contains(item)).collect(Collectors.toList());
 		if (!removedElements.isEmpty()) {
 			notifyAllListeners(new ModifiedListEvent(REMOVE, removedElements));
 		}

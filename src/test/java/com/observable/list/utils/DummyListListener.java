@@ -17,8 +17,8 @@ public class DummyListListener implements ListListener<ModifiedListEvent> {
 	private boolean notified = false;
 	private boolean isAdd = false;
 	private boolean isRemove = false;
-	private List<Object> removedElements = new ArrayList<>();
-	private List<Object> addedElements = new ArrayList<>();
+	private final List<Object> removedElements = new ArrayList<>();
+	private final List<Object> addedElements = new ArrayList<>();
 
 	/**
 	 * Simply update the booleans depending on the event type and populate the

@@ -23,15 +23,15 @@ import org.junit.Test;
  * {@link ObservableList} class but on the interaction between ObservableLists
  * and TestListListeners.
  * 
- * @see {@link ObservableListTest} for detailed tests on all the methods
+ * @see ObservableListTest for detailed tests on all the methods
  */
 public class TestMultiple {
 
-	ObservableList<Object> list1 = new ObservableList<Object>();
-	ObservableList<Object> list2 = new ObservableList<Object>();
-	TestListListener listener1 = new TestListListener("listen_1");
-	TestListListener listener2 = new TestListListener("listen_1_and_2");
-	TestListListener listener3 = new TestListListener("listen_2");
+	private final ObservableList<Object> list1 = new ObservableList<>();
+	private final ObservableList<Object> list2 = new ObservableList<>();
+	private final TestListListener listener1 = new TestListListener("listen_1");
+	private final TestListListener listener2 = new TestListListener("listen_1_and_2");
+	private final TestListListener listener3 = new TestListListener("listen_2");
 
 	/**
 	 * Method that will be called before each test, it initializes the objects
@@ -61,7 +61,7 @@ public class TestMultiple {
 		assertEquals(listener1.getLastEventReceived(), listener2.getLastEventReceived());
 		// check the event
 		assertEquals(listener1.getLastEventReceived().type, ADD);
-		assertListEquals(listener1.getLastEventReceived().elements, Arrays.asList("val1"));
+		assertListEquals(listener1.getLastEventReceived().elements, Collections.singletonList("val1"));
 
 		// basic remove test
 		list1.remove("val1");
@@ -71,10 +71,10 @@ public class TestMultiple {
 		assertEquals(listener1.getLastEventReceived(), listener2.getLastEventReceived());
 		// check the event
 		assertEquals(listener1.getLastEventReceived().type, REMOVE);
-		assertListEquals(listener1.getLastEventReceived().elements, Arrays.asList("val1"));
+		assertListEquals(listener1.getLastEventReceived().elements, Collections.singletonList("val1"));
 
 		// basic add all test
-		List<Object> tempList = new ArrayList<Object>(Arrays.asList("val1", "val2"));
+		List<Object> tempList = new ArrayList<>(Arrays.asList("val1", "val2"));
 		list2.addAll(tempList);
 		// test the event that have been received by the 2 listeners
 		assertNotNull(listener3.getLastEventReceived());
@@ -103,8 +103,8 @@ public class TestMultiple {
 	@Test
 	public void testSeveralObjectAddRemove() {
 		// populate first list with different kind of objects
-		List<Object> tempList = Arrays.asList("String", new Integer(10), new Double(4.0),
-				new Date(System.currentTimeMillis()), new ObservableList<Object>(), new HashMap<String, String>(),
+		List<Object> tempList = Arrays.asList("String", 10, 4.0,
+				new Date(System.currentTimeMillis()), new ObservableList<>(), new HashMap<String, String>(),
 				listener3, this, Arrays.asList("test1", "test2"), "last");
 		list1.addAll(tempList);
 
@@ -188,7 +188,7 @@ public class TestMultiple {
 		TestListListener theListener = new TestListListener("theListener");
 		List<ObservableList<String>> listObservable = new ArrayList<>();
 		for (int iter = 0; iter < numberObservable; iter++) {
-			ObservableList<String> observObj = new ObservableList<String>();
+			ObservableList<String> observObj = new ObservableList<>();
 			observObj.register(theListener);
 			listObservable.add(observObj);
 		}
@@ -204,7 +204,7 @@ public class TestMultiple {
 			// check notification
 			assertNotNull(theListener.getLastEventReceived());
 			assertEquals(theListener.getLastEventReceived().type, ADD);
-			assertListEquals(theListener.getLastEventReceived().elements, new ArrayList<Object>(tempList));
+			assertListEquals(theListener.getLastEventReceived().elements, new ArrayList<>(tempList));
 		}
 	}
 
@@ -234,7 +234,7 @@ public class TestMultiple {
 		for (TestListListener listener : listeners) {
 			assertNotNull(listener.getLastEventReceived());
 			assertEquals(listener.getLastEventReceived().type, ADD);
-			assertListEquals(listener.getLastEventReceived().elements, new ArrayList<Object>(tempList));
+			assertListEquals(listener.getLastEventReceived().elements, new ArrayList<>(tempList));
 		}
 	}
 
@@ -246,7 +246,7 @@ public class TestMultiple {
 	 * @param list2
 	 *            second list to compare
 	 */
-	public void assertListEquals(List<Object> list1, List<Object> list2) {
+    private void assertListEquals(List<Object> list1, List<Object> list2) {
 		assertEquals(new Integer(list1.size()), new Integer(list2.size()));
 		assertTrue(list1.equals(list2));
 	}
@@ -259,8 +259,8 @@ public class TestMultiple {
 	 * @param list2
 	 *            second list to compare
 	 */
-	public void assertListEquals(Collection<?> list1, List<Object> list2) {
-		assertListEquals(new ArrayList<Object>(list1), list2);
+    private void assertListEquals(Collection<?> list1, List<Object> list2) {
+		assertListEquals(new ArrayList<>(list1), list2);
 	}
 
 }

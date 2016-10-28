@@ -17,5 +17,5 @@ public interface ListListener<T extends CustomEvent> {
 	 * @param event
 	 *            event received by the listener
 	 */
-	public void update(final List<?> list, T event);
+	void update(final List<?> list, T event);
 }
